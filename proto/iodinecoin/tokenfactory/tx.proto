@@ -1,0 +1,7 @@
+syntax = "proto3";
+package deet42.iodinecoin.tokenfactory;
+
+option go_package = "github.com/Deet42/iodinecoin/x/tokenfactory/types";
+
+// Msg defines the Msg service.
+service Msg {}

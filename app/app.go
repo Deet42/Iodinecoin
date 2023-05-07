@@ -106,6 +106,9 @@ import (
 	iodinecoinmodule "github.com/Deet42/iodinecoin/x/iodinecoin"
 	iodinecoinmodulekeeper "github.com/Deet42/iodinecoin/x/iodinecoin/keeper"
 	iodinecoinmoduletypes "github.com/Deet42/iodinecoin/x/iodinecoin/types"
+	tokenfactorymodule "github.com/Deet42/iodinecoin/x/tokenfactory"
+	tokenfactorymodulekeeper "github.com/Deet42/iodinecoin/x/tokenfactory/keeper"
+	tokenfactorymoduletypes "github.com/Deet42/iodinecoin/x/tokenfactory/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "github.com/Deet42/iodinecoin/app/params"
@@ -165,19 +168,21 @@ var (
 		ica.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		iodinecoinmodule.AppModuleBasic{},
+		tokenfactorymodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName:     nil,
-		distrtypes.ModuleName:          nil,
-		icatypes.ModuleName:            nil,
-		minttypes.ModuleName:           {authtypes.Minter},
-		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
-		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
-		govtypes.ModuleName:            {authtypes.Burner},
-		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
+		authtypes.FeeCollectorName:         nil,
+		distrtypes.ModuleName:              nil,
+		icatypes.ModuleName:                nil,
+		minttypes.ModuleName:               {authtypes.Minter},
+		stakingtypes.BondedPoolName:        {authtypes.Burner, authtypes.Staking},
+		stakingtypes.NotBondedPoolName:     {authtypes.Burner, authtypes.Staking},
+		govtypes.ModuleName:                {authtypes.Burner},
+		ibctransfertypes.ModuleName:        {authtypes.Minter, authtypes.Burner},
+		tokenfactorymoduletypes.ModuleName: {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -239,6 +244,8 @@ type App struct {
 	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
 
 	IodinecoinKeeper iodinecoinmodulekeeper.Keeper
+
+	TokenfactoryKeeper tokenfactorymodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -284,6 +291,7 @@ func New(
 		ibctransfertypes.StoreKey, icahosttypes.StoreKey, capabilitytypes.StoreKey, group.StoreKey,
 		icacontrollertypes.StoreKey,
 		iodinecoinmoduletypes.StoreKey,
+		tokenfactorymoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -503,6 +511,17 @@ func New(
 	)
 	iodinecoinModule := iodinecoinmodule.NewAppModule(appCodec, app.IodinecoinKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.TokenfactoryKeeper = *tokenfactorymodulekeeper.NewKeeper(
+		appCodec,
+		keys[tokenfactorymoduletypes.StoreKey],
+		keys[tokenfactorymoduletypes.MemStoreKey],
+		app.GetSubspace(tokenfactorymoduletypes.ModuleName),
+
+		app.AccountKeeper,
+		app.BankKeeper,
+	)
+	tokenfactoryModule := tokenfactorymodule.NewAppModule(appCodec, app.TokenfactoryKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -569,6 +588,7 @@ func New(
 		transferModule,
 		icaModule,
 		iodinecoinModule,
+		tokenfactoryModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -599,6 +619,7 @@ func New(
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		iodinecoinmoduletypes.ModuleName,
+		tokenfactorymoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -624,6 +645,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		iodinecoinmoduletypes.ModuleName,
+		tokenfactorymoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -654,6 +676,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		iodinecoinmoduletypes.ModuleName,
+		tokenfactorymoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -684,6 +707,7 @@ func New(
 		ibc.NewAppModule(app.IBCKeeper),
 		transferModule,
 		iodinecoinModule,
+		tokenfactoryModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -889,6 +913,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(iodinecoinmoduletypes.ModuleName)
+	paramsKeeper.Subspace(tokenfactorymoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

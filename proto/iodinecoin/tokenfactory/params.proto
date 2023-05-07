@@ -1,0 +1,12 @@
+syntax = "proto3";
+package deet42.iodinecoin.tokenfactory;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/Deet42/iodinecoin/x/tokenfactory/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  
+}
