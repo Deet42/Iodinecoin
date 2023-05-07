@@ -1,0 +1,12 @@
+syntax = "proto3";
+package deet42.iodinecoin.iodinecoin;
+
+import "gogoproto/gogo.proto";
+import "iodinecoin/iodinecoin/params.proto";
+
+option go_package = "github.com/Deet42/iodinecoin/x/iodinecoin/types";
+
+// GenesisState defines the iodinecoin module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
