@@ -109,6 +109,7 @@ import (
 	tokenfactorymodule "github.com/Deet42/iodinecoin/x/tokenfactory"
 	tokenfactorymodulekeeper "github.com/Deet42/iodinecoin/x/tokenfactory/keeper"
 	tokenfactorymoduletypes "github.com/Deet42/iodinecoin/x/tokenfactory/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "github.com/Deet42/iodinecoin/app/params"
@@ -116,7 +117,7 @@ import (
 )
 
 const (
-	AccountAddressPrefix = "cosmos"
+	AccountAddressPrefix = "iodine"
 	Name                 = "iodinecoin"
 )
 

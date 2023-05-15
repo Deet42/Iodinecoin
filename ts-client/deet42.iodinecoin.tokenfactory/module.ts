@@ -7,11 +7,67 @@ import { msgTypes } from './registry';
 import { IgniteClient } from "../client"
 import { MissingWalletError } from "../helpers"
 import { Api } from "./rest";
+import { MsgMintAndSendTokens } from "./types/iodinecoin/tokenfactory/tx";
+import { MsgCreateDenom } from "./types/iodinecoin/tokenfactory/tx";
+import { MsgDeleteDenom } from "./types/iodinecoin/tokenfactory/tx";
+import { MsgUpdateOwner } from "./types/iodinecoin/tokenfactory/tx";
+import { MsgUpdateDenom } from "./types/iodinecoin/tokenfactory/tx";
 
+import { Denom as typeDenom} from "./types"
 import { Params as typeParams} from "./types"
 
-export {  };
+export { MsgMintAndSendTokens, MsgCreateDenom, MsgDeleteDenom, MsgUpdateOwner, MsgUpdateDenom };
 
+type sendMsgMintAndSendTokensParams = {
+  value: MsgMintAndSendTokens,
+  fee?: StdFee,
+  memo?: string
+};
+
+type sendMsgCreateDenomParams = {
+  value: MsgCreateDenom,
+  fee?: StdFee,
+  memo?: string
+};
+
+type sendMsgDeleteDenomParams = {
+  value: MsgDeleteDenom,
+  fee?: StdFee,
+  memo?: string
+};
+
+type sendMsgUpdateOwnerParams = {
+  value: MsgUpdateOwner,
+  fee?: StdFee,
+  memo?: string
+};
+
+type sendMsgUpdateDenomParams = {
+  value: MsgUpdateDenom,
+  fee?: StdFee,
+  memo?: string
+};
+
+
+type msgMintAndSendTokensParams = {
+  value: MsgMintAndSendTokens,
+};
+
+type msgCreateDenomParams = {
+  value: MsgCreateDenom,
+};
+
+type msgDeleteDenomParams = {
+  value: MsgDeleteDenom,
+};
+
+type msgUpdateOwnerParams = {
+  value: MsgUpdateOwner,
+};
+
+type msgUpdateDenomParams = {
+  value: MsgUpdateDenom,
+};
 
 
 export const registry = new Registry(msgTypes);
@@ -43,6 +99,116 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 
   return {
 		
+		async sendMsgMintAndSendTokens({ value, fee, memo }: sendMsgMintAndSendTokensParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgMintAndSendTokens: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
+				let msg = this.msgMintAndSendTokens({ value: MsgMintAndSendTokens.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+			} catch (e: any) {
+				throw new Error('TxClient:sendMsgMintAndSendTokens: Could not broadcast Tx: '+ e.message)
+			}
+		},
+		
+		async sendMsgCreateDenom({ value, fee, memo }: sendMsgCreateDenomParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgCreateDenom: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
+				let msg = this.msgCreateDenom({ value: MsgCreateDenom.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+			} catch (e: any) {
+				throw new Error('TxClient:sendMsgCreateDenom: Could not broadcast Tx: '+ e.message)
+			}
+		},
+		
+		async sendMsgDeleteDenom({ value, fee, memo }: sendMsgDeleteDenomParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgDeleteDenom: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
+				let msg = this.msgDeleteDenom({ value: MsgDeleteDenom.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+			} catch (e: any) {
+				throw new Error('TxClient:sendMsgDeleteDenom: Could not broadcast Tx: '+ e.message)
+			}
+		},
+		
+		async sendMsgUpdateOwner({ value, fee, memo }: sendMsgUpdateOwnerParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgUpdateOwner: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
+				let msg = this.msgUpdateOwner({ value: MsgUpdateOwner.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+			} catch (e: any) {
+				throw new Error('TxClient:sendMsgUpdateOwner: Could not broadcast Tx: '+ e.message)
+			}
+		},
+		
+		async sendMsgUpdateDenom({ value, fee, memo }: sendMsgUpdateDenomParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgUpdateDenom: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
+				let msg = this.msgUpdateDenom({ value: MsgUpdateDenom.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+			} catch (e: any) {
+				throw new Error('TxClient:sendMsgUpdateDenom: Could not broadcast Tx: '+ e.message)
+			}
+		},
+		
+		
+		msgMintAndSendTokens({ value }: msgMintAndSendTokensParams): EncodeObject {
+			try {
+				return { typeUrl: "/deet42.iodinecoin.tokenfactory.MsgMintAndSendTokens", value: MsgMintAndSendTokens.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgMintAndSendTokens: Could not create message: ' + e.message)
+			}
+		},
+		
+		msgCreateDenom({ value }: msgCreateDenomParams): EncodeObject {
+			try {
+				return { typeUrl: "/deet42.iodinecoin.tokenfactory.MsgCreateDenom", value: MsgCreateDenom.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgCreateDenom: Could not create message: ' + e.message)
+			}
+		},
+		
+		msgDeleteDenom({ value }: msgDeleteDenomParams): EncodeObject {
+			try {
+				return { typeUrl: "/deet42.iodinecoin.tokenfactory.MsgDeleteDenom", value: MsgDeleteDenom.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgDeleteDenom: Could not create message: ' + e.message)
+			}
+		},
+		
+		msgUpdateOwner({ value }: msgUpdateOwnerParams): EncodeObject {
+			try {
+				return { typeUrl: "/deet42.iodinecoin.tokenfactory.MsgUpdateOwner", value: MsgUpdateOwner.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgUpdateOwner: Could not create message: ' + e.message)
+			}
+		},
+		
+		msgUpdateDenom({ value }: msgUpdateDenomParams): EncodeObject {
+			try {
+				return { typeUrl: "/deet42.iodinecoin.tokenfactory.MsgUpdateDenom", value: MsgUpdateDenom.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgUpdateDenom: Could not create message: ' + e.message)
+			}
+		},
 		
 	}
 };
@@ -66,6 +232,7 @@ class SDKModule {
 		this.query = queryClient({ addr: client.env.apiURL });		
 		this.updateTX(client);
 		this.structure =  {
+						Denom: getStructure(typeDenom.fromPartial({})),
 						Params: getStructure(typeParams.fromPartial({})),
 						
 		};

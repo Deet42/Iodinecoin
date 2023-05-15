@@ -2,23 +2,23 @@ version: 1
 accounts:
 - name: alice
   coins:
-  - 20000token
-  - 200000000stake
+  - 20000test
+  - 200000000stiodine
   mnemonic: shell bacon ozone excess need gesture casino warrior all excuse bicycle
     slim combine interest crisp describe fence delay federal behind biology real type
     fence
 - name: bob
   coins:
-  - 10000token
-  - 100000000stake
+  - 10000test
+  - 100000000stiodine
   mnemonic: robot sock leopard install fit oyster agent because exist issue orient
     add jungle mask decorate focus alter uncover burger deputy damage property throw
     gloom
 faucet:
   name: bob
   coins:
-  - 5token
-  - 100000stake
+  - 5test
+  - 100000stiodine
 client:
   typescript:
     path: ts-client
@@ -28,4 +28,29 @@ client:
     path: docs/static/openapi.yml
 validators:
 - name: alice
-  bonded: 100000000stake
+  bonded: 100000000stiodine
+# HELL BELOW
+genesis:
+  app_state:
+    crisis:
+      constant_fee:
+        amount: "1000"
+        denom: "stiodine"
+    gov:
+      deposit_params:
+        max_deposit_period: "172800s"
+        min_deposit:
+            amount: "10000000"
+            denom: "stiodine"
+    mint:
+      minter:
+        inflation: "0.200000000000000000"
+      params:
+        blocks_per_year: "6000000"
+        inflation_max: "0.250000000000000000"
+        inflation_min: "0.070000000000000000"
+        inflation_rate_change: "0.100000000000000000"
+        mint_denom: "stiodine"
+    staking:
+      params:
+        bond_denom: "stiodine"

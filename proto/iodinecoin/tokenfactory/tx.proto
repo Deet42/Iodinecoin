@@ -1,7 +1,64 @@
 syntax = "proto3";
+
 package deet42.iodinecoin.tokenfactory;
+
+import "iodinecoin/tokenfactory/denom.proto";
 
 option go_package = "github.com/Deet42/iodinecoin/x/tokenfactory/types";
 
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+  rpc CreateDenom       (MsgCreateDenom      ) returns (MsgCreateDenomResponse      );
+  rpc UpdateDenom       (MsgUpdateDenom      ) returns (MsgUpdateDenomResponse      );
+  rpc DeleteDenom       (MsgDeleteDenom      ) returns (MsgDeleteDenomResponse      );
+  rpc MintAndSendTokens (MsgMintAndSendTokens) returns (MsgMintAndSendTokensResponse);
+  rpc UpdateOwner       (MsgUpdateOwner      ) returns (MsgUpdateOwnerResponse      );
+}
+message MsgCreateDenom {
+  string owner              = 1;
+  string denom              = 2;
+  string description        = 3;
+  string ticker             = 4;
+  int32  precision          = 5;
+  string url                = 6;
+  int32  maxSupply          = 7;
+  bool   canChangeMaxSupply = 8;
+}
+
+message MsgCreateDenomResponse {}
+
+message MsgUpdateDenom {
+  string owner              = 1;
+  string denom              = 2;
+  string description        = 3;
+  string url                = 4;
+  int32  maxSupply          = 5;
+  bool   canChangeMaxSupply = 6;
+}
+
+message MsgUpdateDenomResponse {}
+
+message MsgDeleteDenom {
+  string owner = 1;
+  string denom = 2;
+}
+
+message MsgDeleteDenomResponse {}
+
+message MsgMintAndSendTokens {
+  string owner     = 1;
+  string denom     = 2;
+  int32  amount    = 3;
+  string recipient = 4;
+}
+
+message MsgMintAndSendTokensResponse {}
+
+message MsgUpdateOwner {
+  string owner    = 1;
+  string denom    = 2;
+  string newOwner = 3;
+}
+
+message MsgUpdateOwnerResponse {}
+
