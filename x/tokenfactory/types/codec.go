@@ -20,7 +20,6 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCreateDenom{},
 		&MsgUpdateDenom{},
-		&MsgDeleteDenom{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgMintAndSendTokens{},

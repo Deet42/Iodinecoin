@@ -10,7 +10,6 @@ option go_package = "github.com/Deet42/iodinecoin/x/tokenfactory/types";
 service Msg {
   rpc CreateDenom       (MsgCreateDenom      ) returns (MsgCreateDenomResponse      );
   rpc UpdateDenom       (MsgUpdateDenom      ) returns (MsgUpdateDenomResponse      );
-  rpc DeleteDenom       (MsgDeleteDenom      ) returns (MsgDeleteDenomResponse      );
   rpc MintAndSendTokens (MsgMintAndSendTokens) returns (MsgMintAndSendTokensResponse);
   rpc UpdateOwner       (MsgUpdateOwner      ) returns (MsgUpdateOwnerResponse      );
 }
@@ -37,13 +36,6 @@ message MsgUpdateDenom {
 }
 
 message MsgUpdateDenomResponse {}
-
-message MsgDeleteDenom {
-  string owner = 1;
-  string denom = 2;
-}
-
-message MsgDeleteDenomResponse {}
 
 message MsgMintAndSendTokens {
   string owner     = 1;
